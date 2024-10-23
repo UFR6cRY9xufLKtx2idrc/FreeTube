@@ -116,7 +116,6 @@ export default defineComponent({
       playNextTimeout: null,
       playNextCountDownIntervalId: null,
       infoAreaSticky: true,
-      commentsEnabled: true,
 
       onMountedRun: false,
 
@@ -486,17 +485,6 @@ export default defineComponent({
           this.liveChat = null
         }
 
-        // region No comment detection
-        // For videos without any comment (comment disabled?)
-        // e.g. https://youtu.be/8NBSwDEf8a8
-        //
-        // `comments_entry_point_header` is null probably when comment disabled
-        // e.g. https://youtu.be/8NBSwDEf8a8
-        // However videos with comments enabled but have no comment
-        // are different (which is not detected here)
-        this.commentsEnabled = result.comments_entry_point_header != null
-        // endregion No comment detection
-
         if ((this.isLive || this.isPostLiveDvr) && !this.isUpcoming) {
           let useRemoteManifest = true
 
@@ -673,9 +661,8 @@ export default defineComponent({
               })
 
               downloadLinks.push(...captionLinks)
-
-              this.downloadLinks = downloadLinks
             }
+            this.downloadLinks = downloadLinks
           } else {
             // video might be region locked or something else. This leads to no formats being available
             showToast(
