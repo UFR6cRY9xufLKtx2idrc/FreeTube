@@ -15,6 +15,7 @@ import packageDetails from '../../../../package.json'
 import {
   buildVTTFileLocally,
   copyToClipboard,
+  extractNumberFromString,
   formatDurationAsTimestamp,
   formatNumber,
   showToast
@@ -76,6 +77,7 @@ export default defineComponent({
       isLiveContent: false,
       isUpcoming: false,
       isPostLiveDvr: false,
+      isUnlisted: false,
       upcomingTimestamp: null,
       upcomingTimeLeft: null,
       /** @type {'dash' | 'audio' | 'legacy'} */
@@ -355,31 +357,12 @@ export default defineComponent({
           return
         }
 
-        const playabilityStatus = result.playability_status
-
-        // The apostrophe is intentionally that one (char code 8217), because that is the one YouTube uses
-        const BOT_MESSAGE = 'Sign in to confirm you’re not a bot'
-
-        if (playabilityStatus.status === 'UNPLAYABLE' || (playabilityStatus.status === 'LOGIN_REQUIRED' && playabilityStatus.reason === BOT_MESSAGE)) {
-          if (playabilityStatus.reason === BOT_MESSAGE) {
-            throw new Error(this.$t('Video.IP block'))
-          }
-
-          let errorText = `[${playabilityStatus.status}] ${playabilityStatus.reason}`
-
-          if (playabilityStatus.error_screen) {
-            errorText += `: ${playabilityStatus.error_screen.subreason.text}`
-          }
-
-          throw new Error(errorText)
-        }
-
         // extract localised title first and fall back to the not localised one
         this.videoTitle = result.primary_info?.title.text ?? result.basic_info.title
-        this.videoViewCount = result.basic_info.view_count
+        this.videoViewCount = result.basic_info.view_count ?? extractNumberFromString(result.primary_info.view_count.text)
 
-        this.channelId = result.basic_info.channel_id
-        this.channelName = result.basic_info.author
+        this.channelId = result.basic_info.channel_id ?? result.secondary_info.owner?.author.id
+        this.channelName = result.basic_info.author ?? result.secondary_info.owner?.author.name
 
         if (result.secondary_info.owner?.author) {
           this.channelThumbnail = result.secondary_info.owner.author.best_thumbnail?.url ?? ''
@@ -395,8 +378,13 @@ export default defineComponent({
           channelId: this.channelId
         })
 
-        // `result.page[0].microformat.publish_date` example value: `2023-08-12T08:59:59-07:00`
-        this.videoPublished = new Date(result.page[0].microformat.publish_date).getTime()
+        if (result.page[0].microformat?.publish_date) {
+          // `result.page[0].microformat.publish_date` example value: `2023-08-12T08:59:59-07:00`
+          this.videoPublished = new Date(result.page[0].microformat.publish_date).getTime()
+        } else {
+          // text date Jan 1, 2000, not as accurate but better than nothing
+          this.videoPublished = new Date(result.primary_info.published).getTime()
+        }
 
         if (result.secondary_info?.description.runs) {
           try {
@@ -420,7 +408,7 @@ export default defineComponent({
             this.thumbnail = `https://i.ytimg.com/vi/${this.videoId}/maxres3.jpg`
             break
           default:
-            this.thumbnail = result.basic_info.thumbnail[0].url
+            this.thumbnail = result.basic_info.thumbnail?.[0].url ?? `https://i.ytimg.com/vi/${this.videoId}/maxresdefault.jpg`
             break
         }
 
@@ -438,6 +426,7 @@ export default defineComponent({
         this.isUpcoming = !!result.basic_info.is_upcoming
         this.isLiveContent = !!result.basic_info.is_live_content
         this.isPostLiveDvr = !!result.basic_info.is_post_live_dvr
+        this.isUnlisted = !!result.basic_info.is_unlisted
 
         const subCount = !result.secondary_info.owner.subscriber_count.isEmpty() ? parseLocalSubscriberCount(result.secondary_info.owner.subscriber_count.text) : NaN
 
@@ -463,7 +452,7 @@ export default defineComponent({
               })
             }
           } else {
-            chapters = this.extractChaptersFromDescription(result.basic_info.short_description)
+            chapters = this.extractChaptersFromDescription(result.basic_info.short_description ?? result.secondary_info.description.text)
           }
 
           if (chapters.length > 0) {
@@ -478,6 +467,51 @@ export default defineComponent({
         }
 
         this.videoChapters = chapters
+
+        const playabilityStatus = result.playability_status
+
+        // The apostrophe is intentionally that one (char code 8217), because that is the one YouTube uses
+        const BOT_MESSAGE = 'Sign in to confirm you’re not a bot'
+
+        if (playabilityStatus.status === 'UNPLAYABLE' || playabilityStatus.status === 'LOGIN_REQUIRED') {
+          if (playabilityStatus.error_screen?.offer_id === 'sponsors_only_video') {
+            // Members-only videos can only be watched while logged into a Google account that is a paid channel member
+            // so there is no point trying any other backends as it will always fail
+            this.errorMessage = this.$t('Video.MembersOnly')
+            this.customErrorIcon = ['fas', 'money-check-dollar']
+            this.isLoading = false
+            this.updateTitle()
+            return
+          } else if (playabilityStatus.reason === 'Sign in to confirm your age' || (result.has_trailer && result.getTrailerInfo() === null)) {
+            // Age-restricted videos can only be watched while logged into a Google account that is age-verified
+            // so there is no point trying any other backends as it will always fail
+            this.errorMessage = this.$t('Video.AgeRestricted')
+            this.isLoading = false
+            this.updateTitle()
+            return
+          }
+
+          let errorText
+
+          if (playabilityStatus.reason === BOT_MESSAGE || playabilityStatus.reason === 'Please sign in') {
+            errorText = this.$t('Video.IP block')
+          } else {
+            errorText = `[${playabilityStatus.status}] ${playabilityStatus.reason}`
+
+            if (playabilityStatus.error_screen?.subreason) {
+              errorText += `: ${playabilityStatus.error_screen.subreason.text}`
+            }
+          }
+
+          if (this.backendFallback) {
+            throw new Error(errorText)
+          } else {
+            this.errorMessage = errorText
+            this.isLoading = false
+            this.updateTitle()
+            return
+          }
+        }
 
         if (!this.hideLiveChat && this.isLive && result.livechat) {
           this.liveChat = result.getLiveChat()
@@ -698,7 +732,6 @@ export default defineComponent({
           }
         }
 
-        // this.errorMessage = 'Test error message'
         this.isLoading = false
         this.updateTitle()
       } catch (err) {
@@ -761,6 +794,7 @@ export default defineComponent({
           this.isLive = result.liveNow
           this.isFamilyFriendly = result.isFamilyFriendly
           this.isPostLiveDvr = !!result.isPostLiveDvr
+          this.isUnlisted = !result.isListed
 
           this.captions = result.captions.map(caption => {
             return {
