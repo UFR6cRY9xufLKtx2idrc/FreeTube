@@ -210,6 +210,8 @@ Settings:
   Player Settings: {}
 Channel:
   Playlists: {}
+  Videos:
+    Videos: ვიდეოები
 Video:
   External Player: {}
 Tooltips: {}
@@ -221,4 +223,9 @@ Search Listing:
     8K: 8K
 KeyboardShortcutPrompt:
   Toggle Developer Tools: დამმუშავებლის ინსტრუმენტების გადართვა
+  Zoom In: მასშტაბის გაზრდა
+  Zoom Out: მასშტაბის შემცირება
+  Fullscreen: სრულ ეკრანზე გადართვა
 Preferences: პრეფერენციები
+Profile:
+  Select All: ყველას მონიშვნა

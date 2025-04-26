@@ -644,7 +644,7 @@ Profile:
   Subscription List: ''
   Other Channels: ''
   '{number} selected': ''
-  Select All: ''
+  Select All: 'Olles selecteern'
   Select None: ''
   Delete Selected: ''
   Add Selected To Profile: ''
@@ -669,7 +669,7 @@ Channel:
   This channel is age-restricted and currently cannot be viewed in FreeTube.: ''
   Channel Tabs: ''
   Videos:
-    Videos: ''
+    Videos: 'Videos'
     This channel does not currently have any videos: ''
     Sort Types:
       Newest: ''
@@ -977,3 +977,6 @@ checkmark: ''
 Display Label: ''
 KeyboardShortcutPrompt:
   Toggle Developer Tools: Ontwikkeloars gerjidschap anzetn
+  Zoom Out: Verkljin
+  Zoom In: Vergrôtn
+  Fullscreen: Vul skerm anzetn
