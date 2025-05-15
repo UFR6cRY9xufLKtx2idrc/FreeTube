@@ -212,16 +212,7 @@ export async function copyToClipboard(content, { messageOnSuccess = null, messag
  * @param {string} url the URL to open
  */
 export async function openExternalLink(url) {
-  if (process.env.IS_ELECTRON) {
-    const ipcRenderer = require('electron').ipcRenderer
-    const success = await ipcRenderer.invoke(IpcChannels.OPEN_EXTERNAL_LINK, url)
-
-    if (!success) {
-      showToast(i18n.t('Blocked opening potentially unsafe URL', { url }))
-    }
-  } else {
-    window.open(url, '_blank')
-  }
+  window.open(url, '_blank', 'noreferrer')
 }
 
 /**

@@ -244,15 +244,10 @@ const newWindowText = computed(() => {
 })
 
 function createNewWindow() {
-  if (process.env.IS_ELECTRON) {
-    const { ipcRenderer } = require('electron')
-    ipcRenderer.send(IpcChannels.CREATE_NEW_WINDOW)
-  } else {
-    const url = new URL(window.location.href)
-    url.hash = landingPage.value
+  const url = new URL(window.location.href)
+  url.hash = landingPage.value
 
-    window.open(url.toString(), '_blank')
-  }
+  window.open(url.toString(), '_blank', 'noreferrer')
 }
 
 const usingOnlySearchHistoryResults = computed(() => lastSuggestionQuery.value.length === 0)
