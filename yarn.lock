@@ -3701,10 +3701,10 @@ electron-to-chromium@^1.5.173:
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.179.tgz#453d53f360014a2604d40ccd41c4ea0a6e31b99a"
   integrity sha512-UWKi/EbBopgfFsc5k61wFpV7WrnnSlSzW/e2XcBmS6qKYTivZlLtoll5/rdqRTxGglGHkmkW0j0pFNJG10EUIQ==
 
-electron@^37.2.1:
-  version "37.2.1"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-37.2.1.tgz#33fd942fb4199d955e675be79ecabc01d52bc355"
-  integrity sha512-ae2EbzRNqIAHlftfCHtbbt6EgJUW8+zxWLONqNnn2iSrLF0O/pbxbff3xcpZYPpmFBs4uqjoi+s4QS7DQ+zZ/w==
+electron@^37.2.3:
+  version "37.2.3"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-37.2.3.tgz#a4916c591ddae6a2002dbb7f8ddc8e3db96b1f0b"
+  integrity sha512-JRKKn8cRDXDfkC+oWISbYs+c+L6RA776JM0NiB9bn2yV8H/LnBUlVPzKKfsXgrUIokN4YcbCw694vfAdEJwtGw==
   dependencies:
     "@electron/get" "^2.0.0"
     "@types/node" "^22.7.7"
@@ -4030,10 +4030,10 @@ eslint-plugin-import-x@^4.16.1:
     stable-hash-x "^0.2.0"
     unrs-resolver "^1.9.2"
 
-eslint-plugin-jsdoc@^51.3.4:
-  version "51.3.4"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-51.3.4.tgz#40cfc8e406d40a3d9fdf6e44dcccd3c39a198353"
-  integrity sha512-maz6qa95+sAjMr9m5oRyfejc+mnyQWsWSe9oyv9371bh4/T0kWOMryJNO4h8rEd97wo/9lbzwi3OOX4rDhnAzg==
+eslint-plugin-jsdoc@^51.4.1:
+  version "51.4.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-51.4.1.tgz#a512460da6ba328ac3be0c3e7b2aaa4633175625"
+  integrity sha512-y4CA9OkachG8v5nAtrwvcvjIbdcKgSyS6U//IfQr4FZFFyeBFwZFf/tfSsMr46mWDJgidZjBTqoCRlXywfFBMg==
   dependencies:
     "@es-joy/jsdoccomment" "~0.52.0"
     are-docs-informative "^0.0.2"
@@ -7722,10 +7722,10 @@ setprototypeof@1.2.0:
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.2.0.tgz#66c9a24a73f9fc28cbe66b09fed3d33dcaf1b424"
   integrity sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==
 
-shaka-player@^4.14.22:
-  version "4.14.22"
-  resolved "https://registry.yarnpkg.com/shaka-player/-/shaka-player-4.14.22.tgz#aafff2090b816687ab540e42a24a6573856bcce5"
-  integrity sha512-ao9RmkQDXtZNpg5uaWbJ/DMNxaQA6BgVbS0UsHeHGntvJeAohnMLAhbm4pIvALllES2gNq3o8ofuQem2seX3Uw==
+shaka-player@^4.14.23:
+  version "4.14.23"
+  resolved "https://registry.yarnpkg.com/shaka-player/-/shaka-player-4.14.23.tgz#8b5d3ac352a5d94e8500cdf0f5462546985ade65"
+  integrity sha512-a11ik+EbMhVtac9M3ITEBG0U/aEcIxglqTaDewHIGBYhFFYgv6220Y3qYX2b94IYSaqX2sougqIjIZhbDtVC/g==
   dependencies:
     eme-encryption-scheme-polyfill "^2.2.3"
 
@@ -8189,10 +8189,10 @@ stylelint-use-logical-spec@^5.0.1:
   resolved "https://registry.yarnpkg.com/stylelint-use-logical-spec/-/stylelint-use-logical-spec-5.0.1.tgz#d5aa254d615d373f18214297c0b49a03a6ca5980"
   integrity sha512-UfLB4LW6iG4r3cXxjxkiHQrFyhWFqt8FpNNngD+TyvgMWSokk5TYwTvBHS3atUvZhOogllTOe/PUrGE+4z84AA==
 
-stylelint@^16.21.1, stylelint@^16.8.2:
-  version "16.21.1"
-  resolved "https://registry.yarnpkg.com/stylelint/-/stylelint-16.21.1.tgz#1887cbea53c40ff2a0b3ff3912852ff16e1b696c"
-  integrity sha512-WCXdXnYK2tpCbebgMF0Bme3YZH/Rh/UXerj75twYo4uLULlcrLwFVdZTvTEF8idFnAcW21YUDJFyKOfaf6xJRw==
+stylelint@^16.22.0, stylelint@^16.8.2:
+  version "16.22.0"
+  resolved "https://registry.yarnpkg.com/stylelint/-/stylelint-16.22.0.tgz#00020f4390a8625cf7f707820c1b6b538e4b0fa3"
+  integrity sha512-SVEMTdjKNV4ollUrIY9ordZ36zHv2/PHzPjfPMau370MlL2VYXeLgSNMMiEbLGRO8RmD2R8/BVUeF2DfnfkC0w==
   dependencies:
     "@csstools/css-parser-algorithms" "^3.0.5"
     "@csstools/css-tokenizer" "^3.0.4"
@@ -8873,10 +8873,10 @@ webpack-sources@^3.3.3:
   resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-3.3.3.tgz#d4bf7f9909675d7a070ff14d0ef2a4f3c982c723"
   integrity sha512-yd1RBzSGanHkitROoPFd6qsrxt+oFhg/129YzheDGqeustzX0vTZJZsSsQjVQC4yzBQ56K55XU8gaNCtIzOnTg==
 
-webpack@^5.100.1:
-  version "5.100.1"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.100.1.tgz#d8a7e7761d253b961248ed9ed7661c51698593de"
-  integrity sha512-YJB/ESPUe2Locd0NKXmw72Dx8fZQk1gTzI6rc9TAT4+Sypbnhl8jd8RywB1bDsDF9Dy1RUR7gn3q/ZJTd0OZZg==
+webpack@^5.100.2:
+  version "5.100.2"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.100.2.tgz#e2341facf9f7de1d702147c91bcb65b693adf9e8"
+  integrity sha512-QaNKAvGCDRh3wW1dsDjeMdDXwZm2vqq3zn6Pvq4rHOEOGSaUMgOOjG2Y9ZbIGzpfkJk9ZYTHpDqgDfeBDcnLaw==
   dependencies:
     "@types/eslint-scope" "^3.7.7"
     "@types/estree" "^1.0.8"
