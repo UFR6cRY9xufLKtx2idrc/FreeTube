@@ -830,7 +830,6 @@ Channel:
     Reveal Answers: Reveal Answers
     Hide Answers: Hide Answers
     Video hidden by FreeTube: Video hidden by FreeTube
-    Viewing Posts Only Supported By Invidious: Viewing Posts is only supported by Invidious. Head to a channel's community tab to view content there without Invidious.
 Video:
   IP block: 'YouTube has blocked your IP address from watching videos. Please try switching to a different VPN or proxy.'
   MembersOnly: Members-only videos cannot be watched with FreeTube as they require Google login and paid membership to the uploader's channel.
@@ -1220,3 +1219,5 @@ KeyboardShortcutPrompt:
   Skip by Tenths: Skip through video by percentage (3 skips to 30% of duration)
   Home: Seek to the beginning of the video
   End: Seek to the end of the video
+  Skip to Next Video: Skip to the next video in a playlist or next recommended video
+  Skip to Previous Video: Skip to the previous video in a playlist
