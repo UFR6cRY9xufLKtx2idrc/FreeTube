@@ -197,6 +197,7 @@ User Playlists:
   Export Playlist: Esporta questa playlist
   The playlist has been successfully exported: La playlist è stata esportata correttamente
   TotalTimePlaylist: 'Tempo totale: {duration}'
+  Export list of URLs: Esporta l'elenco degli URL
 History:
   # On History Page
   History: 'Cronologia'
@@ -1015,8 +1016,6 @@ Clipboard:
   Copy failed: Copia negli appunti non riuscita
 Chapters:
   Chapters: Capitoli
-  'Chapters list visible, current chapter: {chapterName}': 'Elenco capitoli visibile, capitolo corrente: {chapterName}'
-  'Chapters list hidden, current chapter: {chapterName}': 'Elenco capitoli nascosto, capitolo corrente: {chapterName}'
   Key Moments: Momenti chiave
 Preferences: Preferenze
 Ok: OK
