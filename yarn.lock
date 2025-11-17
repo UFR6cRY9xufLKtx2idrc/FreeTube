@@ -208,11 +208,6 @@
   resolved "https://registry.yarnpkg.com/@babel/helper-validator-identifier/-/helper-validator-identifier-7.28.5.tgz#010b6938fab7cb7df74aa2bbc06aa503b8fe5fb4"
   integrity sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==
 
-"@babel/helper-validator-identifier@^7.28.5":
-  version "7.28.5"
-  resolved "https://registry.yarnpkg.com/@babel/helper-validator-identifier/-/helper-validator-identifier-7.28.5.tgz#010b6938fab7cb7df74aa2bbc06aa503b8fe5fb4"
-  integrity sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==
-
 "@babel/helper-validator-option@^7.27.1":
   version "7.27.1"
   resolved "https://registry.yarnpkg.com/@babel/helper-validator-option/-/helper-validator-option-7.27.1.tgz#fa52f5b1e7db1ab049445b421c4471303897702f"
@@ -7659,10 +7654,10 @@ setprototypeof@1.2.0:
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.2.0.tgz#66c9a24a73f9fc28cbe66b09fed3d33dcaf1b424"
   integrity sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==
 
-shaka-player@^4.16.8:
-  version "4.16.8"
-  resolved "https://registry.yarnpkg.com/shaka-player/-/shaka-player-4.16.8.tgz#9234e7e6b6dd3efd6111b7ad5d733f2c23b922db"
-  integrity sha512-+5vgsd/jmBpjTdclcrjm6ai91mEFLP/UVFRGhJiJ/nE4KPDtRb9+0nYYOx21h5ZoEbiGvAmY+/nw4j2tbfkD6w==
+shaka-player@^4.16.9:
+  version "4.16.9"
+  resolved "https://registry.yarnpkg.com/shaka-player/-/shaka-player-4.16.9.tgz#1d4872394dbff7f961dffd005d16c6acb15a0a06"
+  integrity sha512-WFmU74V5zyb6TlGkwTVgQvH6SZUFXYw3spjQX6NhGfbCP9XT/6vSGSkOL05+oMm0P+UbxA1geL2pwBMudiSZuQ==
 
 shallow-clone@^3.0.0:
   version "3.0.1"
