@@ -75,7 +75,7 @@ jobs:
       run: yarn run build
 
     - name: Upload Windows x64 .exe Artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       if: startsWith(matrix.os, 'windows') && startsWith(matrix.runtime, 'win-x64')
       with:
         name: freetube-${{ steps.versionNumber.outputs.result }}-setup-x64.exe
@@ -92,7 +92,7 @@ jobs:
         overwrite: true
 
     - name: Upload Windows x64 Portable Artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       if: startsWith(matrix.os, 'windows') && startsWith(matrix.runtime, 'win-x64')
       with:
         name: freetube-${{ steps.versionNumber.outputs.result }}-win-x64-portable.exe
@@ -109,7 +109,7 @@ jobs:
         overwrite: true
 
     - name: Upload Windows x64 .zip Artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       if: startsWith(matrix.os, 'windows') && startsWith(matrix.runtime, 'win-x64')
       with:
         name: freetube-${{ steps.versionNumber.outputs.result }}-win-x64-portable.zip
@@ -126,7 +126,7 @@ jobs:
         overwrite: true
 
     - name: Upload Windows x64 .7z Artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       if: startsWith(matrix.os, 'windows') && startsWith(matrix.runtime, 'win-x64')
       with:
         name: freetube-${{ steps.versionNumber.outputs.result }}-win-x64-portable.7z
