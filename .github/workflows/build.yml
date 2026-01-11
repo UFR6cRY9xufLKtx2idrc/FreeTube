@@ -8,15 +8,14 @@ on:
     branches: [ master, development, '**-RC' ]
   workflow_dispatch:
 
-permissions:
-  contents: write
+permissions: {}
 
 jobs:
   build:
 
     permissions:
       actions: write
-      contents: read
+      contents: write
 
     strategy:
       matrix:
