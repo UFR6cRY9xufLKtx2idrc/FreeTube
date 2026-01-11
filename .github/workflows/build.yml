@@ -8,7 +8,8 @@ on:
     branches: [ master, development, '**-RC' ]
   workflow_dispatch:
 
-permissions: {}
+permissions:
+  contents: write
 
 jobs:
   build:
