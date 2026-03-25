@@ -906,10 +906,10 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-1.0.0.tgz#f75c08f88cfd9eb8d9b062284d5bbcc60c41bf2a"
   integrity sha512-dDlz3W405VMFO4w5kIP9DOmELBcvFQGmLoKSdIRstBDubKFYwaNHV1NnlzMCQpXQFGWVALmeMORAuiLx18AvZQ==
 
-"@double-great/stylelint-a11y@^3.4.6":
-  version "3.4.6"
-  resolved "https://registry.yarnpkg.com/@double-great/stylelint-a11y/-/stylelint-a11y-3.4.6.tgz#5982d65fd1483449e5109140971103e7a9c8c545"
-  integrity sha512-4GXi5jWsogaMVLxuYUwJnxg0eKqrQ7cRGqupv/5r4YoW1qe1QLzHO4yvFZmQpAUBx516erIxafrfXGX7qi4NOA==
+"@double-great/stylelint-a11y@^3.4.7":
+  version "3.4.7"
+  resolved "https://registry.yarnpkg.com/@double-great/stylelint-a11y/-/stylelint-a11y-3.4.7.tgz#dd9b11652646fac648026465d4ee3871632f3c35"
+  integrity sha512-H2nfhZ6Ugk1hqVxrdFLJftcAQVyRQzbmj2nQ1gGub75v3QcJgzcm/6wf7qWfKqacWigFrNxWTvjiXdOdiMXk1w==
   dependencies:
     postcss "^8.5.8"
 
