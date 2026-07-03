@@ -1079,10 +1079,6 @@ export function parseLocalChannelVideos(videos, channelId, channelName) {
   const parsedVideos = []
 
   for (const video of videos) {
-    // `BADGE_STYLE_TYPE_MEMBERS_ONLY` used for both `members only` and `members first` videos
-    if (video.is(YTNodes.Video) && video.badges.some(badge => badge.style === 'BADGE_STYLE_TYPE_MEMBERS_ONLY')) {
-      continue
-    }
     const parsedVideo = parseLocalListVideo(video, channelId, channelName)
     if (parsedVideo != null) {
       parsedVideos.push(parsedVideo)
