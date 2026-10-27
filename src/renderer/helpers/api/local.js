@@ -1768,9 +1768,7 @@ export function parseLocalListVideo(item, channelId, channelName) {
 
     if (
       // When video is passed in via like community post attachment
-      video.title?.text === 'This video isn\'t publicly available' ||
-      // `BADGE_STYLE_TYPE_MEMBERS_ONLY` is used for both `members only` and `members first` videos
-      video.badges.some(badge => badge.style === 'BADGE_STYLE_TYPE_MEMBERS_ONLY')
+      video.title?.text === 'This video isn\'t publicly available'
     ) {
       return null
     }
