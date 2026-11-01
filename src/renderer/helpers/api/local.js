@@ -22,6 +22,21 @@ const TRACKING_PARAM_NAMES = [
   'utm_term',
   'utm_content',
 ]
+const ALLOWED_LINK_PROTOCOLS = ['http:', 'https:']
+const SCHEMELESS_DOMAIN_URL_PATTERN = /^(?:\/\/)?[^./?#:@\s]+(?:\.[^./?#:@\s]+)+(?::\d+)?(?:[/?#]|$)/
+const YOUTUBE_REDIRECT_HOSTS = ['youtube.com', 'www.youtube.com']
+
+/**
+ * @param {URL} url
+ * @returns {string|null|undefined} The q value, null when missing, or undefined for a non-redirect URL.
+ */
+function getYouTubeRedirectTarget(url) {
+  if (!YOUTUBE_REDIRECT_HOSTS.includes(url.hostname) || url.pathname !== '/redirect') {
+    return undefined
+  }
+
+  return url.searchParams.get('q')
+}
 
 if (process.env.SUPPORTS_LOCAL_API) {
   Platform.shim.eval = (data) => {
@@ -551,6 +566,47 @@ function buildSessionFromYtConfig(ytConfig, fetchFunc) {
 }
 
 /**
+ * @param {string} videoId
+ * @param {number} signatureTimestamp
+ * @param {string} poToken
+ * @param {string | undefined} [clientOverride]
+ */
+function createPlayerRequestBody(videoId, signatureTimestamp, poToken, clientOverride) {
+  return {
+    videoId,
+    racyCheckOk: true,
+    contentCheckOk: true,
+    playbackContext: {
+      contentPlaybackContext: {
+        vis: 0,
+        splay: false,
+        lactMilliseconds: '-1',
+        signatureTimestamp
+      }
+    },
+    serviceIntegrityDimensions: {
+      poToken
+    },
+    client: clientOverride
+  }
+}
+
+/**
+ * @param {string} videoId
+ */
+function createWatchNextRequestBody(videoId) {
+  return {
+    videoId,
+    racyCheckOk: true,
+    contentCheckOk: true,
+    playbackContext: {
+      vis: 0,
+      lactMilliseconds: '-1'
+    }
+  }
+}
+
+/**
  * @param {string} id
  * @returns {Promise<{
  *   info: import('youtubei.js').YT.VideoInfo,
@@ -624,37 +680,54 @@ export async function getLocalVideoInfo(id) {
   let nextResponse
   const context = htmlExtracts.session.context
 
-  if (htmlExtracts.playerResponse) {
-    totalAdTimeMilliseconds = extractTotalAdTimeMilliseconds(htmlExtracts.playerResponse)
-
-    playerResponse = { data: htmlExtracts.playerResponse }
-  } else {
-    playerResponse = await htmlExtracts.session.actions.execute('/player', {
-      videoId: id,
-      racyCheckOk: true,
-      contentCheckOk: true,
-      playbackContext: {
-        contentPlaybackContext: {
-          vis: 0,
-          splay: false,
-          lactMilliseconds: '-1',
-          signatureTimestamp: player.signature_timestamp
-        }
-      },
-      serviceIntegrityDimensions: {
-        poToken: contentPoToken
-      }
+  if (!htmlExtracts.playerResponse && !htmlExtracts.nextResponse) {
+    const combinedResponse = await htmlExtracts.session.actions.execute('/get_watch', {
+      playerRequest: createPlayerRequestBody(id, player.signature_timestamp, contentPoToken),
+      watchNextRequest: createWatchNextRequestBody(id)
     })
+
+    playerResponse = {
+      data: combinedResponse.data.find(response => {
+        return response.responseType === 'STREAMING_WATCH_RESPONSE_TYPE_PLAYER_RESPONSE'
+      }).playerResponse
+    }
+
+    nextResponse = {
+      data: combinedResponse.data.find(response => {
+        return response.responseType === 'STREAMING_WATCH_RESPONSE_TYPE_WATCH_NEXT_RESPONSE'
+      }).watchNextResponse
+    }
+  } else {
+    if (htmlExtracts.playerResponse) {
+      totalAdTimeMilliseconds = extractTotalAdTimeMilliseconds(htmlExtracts.playerResponse)
+
+      playerResponse = { data: htmlExtracts.playerResponse }
+    } else {
+      const requestBody = createPlayerRequestBody(id, player.signature_timestamp, contentPoToken)
+      playerResponse = await htmlExtracts.session.actions.execute('/player', requestBody)
+    }
+
+    if (htmlExtracts.nextResponse) {
+      nextResponse = { data: htmlExtracts.nextResponse }
+    } else {
+      const requestBody = createWatchNextRequestBody(id)
+      nextResponse = await htmlExtracts.session.actions.execute('/next', requestBody)
+    }
   }
 
-  if (htmlExtracts.nextResponse) {
-    nextResponse = { data: htmlExtracts.nextResponse }
-  } else {
-    nextResponse = await htmlExtracts.session.actions.execute('/next', {
-      videoId: id,
-      racyCheckOk: true,
-      contentCheckOk: true
-    })
+  if (
+    playerResponse?.data &&
+    (playerResponse.data.videoDetails?.isLive ||
+    playerResponse.data.videoDetails?.isPostLiveDvr) &&
+    !playerResponse.data.videoDetails?.isUpcoming &&
+    !playerResponse.data.streamingData?.hlsManifestUrl
+  ) {
+    const mwebRequestBody = createPlayerRequestBody(id, player.signature_timestamp, contentPoToken, 'MWEB')
+
+    const fields = 'streamingData,playabilityStatus,adSlots'
+    const mwebPlayerResponse = await htmlExtracts.session.actions.execute(`/player?$fields=${fields}`, mwebRequestBody)
+
+    Object.assign(playerResponse.data, mwebPlayerResponse.data)
   }
 
   const cpn = Utils.generateRandomString(16)
@@ -1163,6 +1236,58 @@ export async function getLocalArtistTopicChannelReleasesContinuation(channel, co
     releases: playlists ? playlists.map(playlist => parseLocalListPlaylist(playlist)) : [],
     continuationData: continuationItem
   }
+}
+
+/**
+ * @param {import('youtubei.js').YTNodes.NavigationEndpoint} endpoint
+ * @returns {string|null}
+ */
+function getDirectChannelAboutUrl(endpoint) {
+  try {
+    let url = new URL(endpoint.toURL())
+
+    const redirectTarget = getYouTubeRedirectTarget(url)
+    if (redirectTarget !== undefined) {
+      if (!redirectTarget) return null
+      const destination = SCHEMELESS_DOMAIN_URL_PATTERN.test(redirectTarget)
+        ? `https://${redirectTarget.replace(/^\/\//, '')}`
+        : redirectTarget
+      url = new URL(destination)
+    }
+
+    return ALLOWED_LINK_PROTOCOLS.includes(url.protocol) ? url.href : null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * @param {import('youtubei.js').YTNodes.ChannelAboutFullMetadata | import('youtubei.js').YTNodes.AboutChannel} about
+ * @returns {{ title: string, url: string, displayUrl: string, iconUrl: string }[]}
+ */
+export function parseLocalChannelAboutLinks(about) {
+  const links = about.primary_links ?? about.metadata?.links ?? []
+  const parsedLinks = []
+
+  for (const link of links) {
+    const endpoint = link.endpoint ?? link.link.endpoint
+    const url = getDirectChannelAboutUrl(endpoint)
+
+    if (!url) {
+      continue
+    }
+
+    const icons = link.icon ?? link.favicon ?? []
+
+    parsedLinks.push({
+      title: link.title.text?.trim() ?? '',
+      url,
+      displayUrl: url.replace(/^https?:\/\/(?:www\.)?/, ''),
+      iconUrl: icons[0]?.url ?? ''
+    })
+  }
+
+  return parsedLinks
 }
 
 /**
@@ -2146,6 +2271,7 @@ export function parseLocalWatchNextVideo(video) {
       title: video.title.text?.trim(),
       author: video.author.name,
       authorId: video.author.id,
+      collaborators: parseLocalCollaborators(video.author.collaborators),
       lengthSeconds: video.duration.seconds
     }
   } else if (video.is(YTNodes.LockupView)) {
@@ -2165,6 +2291,7 @@ export function parseLocalWatchNextVideo(video) {
       title: video.title.text?.trim(),
       author: video.author.name,
       authorId: video.author.id,
+      collaborators: parseLocalCollaborators(video.author.collaborators),
       viewCount: video.view_count == null ? null : extractNumberFromString(video.view_count.text),
       published,
       lengthSeconds: isNaN(video.duration.seconds) ? '' : video.duration.seconds,
@@ -2285,10 +2412,10 @@ export function parseLocalTextRuns(runs, emojiSize = 16, options = { looseChanne
           case 'WEB_PAGE_TYPE_UNKNOWN':
           default: {
             const url = new URL((endpoint.dialog?.type === 'ConfirmDialog' && endpoint.dialog.confirm_button.endpoint.payload.url) || endpoint.payload.url)
-            if (url.hostname === 'www.youtube.com' && url.pathname === '/redirect' && url.searchParams.has('q')) {
+            const redirectTarget = getYouTubeRedirectTarget(url)
+            if (redirectTarget != null) {
               // remove utm tracking parameters
-              const realURLStr = url.searchParams.get('q')
-              const realURL = new URL(realURLStr)
+              const realURL = new URL(redirectTarget)
               let urlChanged = false
 
               TRACKING_PARAM_NAMES.forEach((paramName) => {
@@ -2300,7 +2427,7 @@ export function parseLocalTextRuns(runs, emojiSize = 16, options = { looseChanne
 
               // `searchParams.delete` changes query string unnecessarily
               // Using original unless there is any change
-              parsedRuns.push(urlChanged ? realURL.toString() : realURLStr)
+              parsedRuns.push(urlChanged ? realURL.toString() : redirectTarget)
             } else {
               // this is probably a special YouTube URL like http://www.youtube.com/approachingnirvana
               parsedRuns.push(endpoint.payload.url)
@@ -2377,10 +2504,12 @@ export function parseLocalComment(comment, commentThread = undefined) {
   const replyToken = commentThread ?? null
   let hasOwnerReplied = false
   let hasReplyToken = false
+  let numReplies = 0
 
   if (commentThread?.has_replies) {
     hasOwnerReplied = !!commentThread.comment_replies_data?.has_channel_owner_replied
     hasReplyToken = true
+    numReplies = parseLocalSubscriberCount(commentThread.comment_replies_data?.view_replies?.text || '0')
   }
 
   const commentTextRuns = comment.voice_reply_container?.transcript_text?.runs ?? comment.content?.runs ?? []
@@ -2403,7 +2532,7 @@ export function parseLocalComment(comment, commentThread = undefined) {
     memberIconUrl: comment.member_badge?.url ?? '',
     time: getRelativeTimeFromDate(calculatePublishedDate((comment.published_time ?? '').replace('(edited)', '').trim()) ?? 0, false),
     likes: parseLocalSubscriberCount(comment.like_count?.trim() || '0'),
-    numReplies: hasReplyToken ? parseLocalSubscriberCount(comment.reply_count_a11y ?? '0') : 0
+    numReplies
   }
 }
 

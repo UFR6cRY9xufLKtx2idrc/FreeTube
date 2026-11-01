@@ -93,7 +93,7 @@ Subscriptions:
   This profile has a large number of subscriptions. Forcing RSS to avoid rate limiting: Este perfil tem um grande número de inscrições. Forçando RSS para evitar limitação de rede
   Error Channels: Canais com erros
   Disabled Automatic Fetching: Você desabilitou a busca automática de inscrições. Atualize as inscrições para vê-las aqui.
-  Empty Channels: Atualmente, os canais em que você está inscrito não possuem vídeos.
+  Empty Channels: Os canais em que você está inscrito não possuem vídeos no momento.
   Subscriptions Tabs: Guias de inscrições
   All Subscription Tabs Hidden: Todas as guias de inscrição estão ocultas. Para ver o conteúdo aqui, desoculte algumas guias na seção "{subsection}" em "{settingsSection}".
   Load More Posts: Carregar mais postagens
@@ -691,6 +691,7 @@ Channel:
     Details: Detalhes
     Location: Localização
     Joined: Inscrito
+    Links: Links
   Added channel to your subscriptions: Canal adicionado às suas inscrições
   Removed subscription from {count} other channel(s): Inscrição removida de outros {count} canais
   Channel has been removed from your subscriptions: O canal foi removido de suas inscrições
@@ -825,7 +826,7 @@ Video:
     Exit Full Window: Sair do preenchimento de janela
     Autoplay is off: A reprodução automática está desativada
     Autoplay is on: A reprodução automática está ativada
-  IP block: O YouTube bloqueou seu endereço IP para assistir a vídeos. Tente mudar para uma VPN ou proxy diferente.
+  IP block: O YouTube bloqueou seu endereço IP, impedindo que você assista a vídeos, ou este vídeo pode conter conteúdo com menores de idade, cujo acesso é restrito pelo YouTube para usuários que não estiverem conectados. Se for um bloqueio de IP, tente usar uma VPN ou um proxy diferente.
   Unlisted: Não listado
   MembersOnly: Vídeos exclusivos para membros não podem ser assistidos com o FreeTube, pois exigem login do Google e assinatura paga do canal do remetente.
   AgeRestricted: Vídeos com restrição de idade não podem ser assistidos com o FreeTube, pois exigem login do Google e uso de uma conta do YouTube com verificação de idade.
